@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -23,6 +23,7 @@ public class CountryDto {
     private String language;
     private String languageCode;
     private String currency;
+    private BigDecimal currencyExchangeRateWithUsDollar;
     private double distanceToBuenosAires;
 
 }

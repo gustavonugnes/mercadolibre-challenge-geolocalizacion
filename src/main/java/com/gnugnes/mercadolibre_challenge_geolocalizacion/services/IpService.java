@@ -2,7 +2,6 @@ package com.gnugnes.mercadolibre_challenge_geolocalizacion.services;
 
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.Utils;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.CountryDto;
-import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.Ip2CountryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,8 @@ public class IpService {
     private final Ip2CountryService ip2CountryService;
 
     public CountryDto getCountryData(String ip) {
-        var data = ip2CountryService.getCountryDataFake(ip);
+//        var data = ip2CountryService.getCountryDataFake(ip);
+        var data = ip2CountryService.getCountryData(ip);
 
         var countryDto = new CountryDto();
         countryDto.setIp(data.getIp());
@@ -30,6 +30,7 @@ public class IpService {
         }
 
         countryDto.setCurrency(null);
+        countryDto.setCurrencyExchangeRateWithUsDollar(null);
         countryDto.setCountryTime(null);
         countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));
 
