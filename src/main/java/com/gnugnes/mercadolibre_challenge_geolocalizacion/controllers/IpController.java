@@ -1,8 +1,6 @@
 package com.gnugnes.mercadolibre_challenge_geolocalizacion.controllers;
 
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.CountryDto;
-import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.Ip2CountryDto;
-import com.gnugnes.mercadolibre_challenge_geolocalizacion.services.Ip2CountryService;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.services.IpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
