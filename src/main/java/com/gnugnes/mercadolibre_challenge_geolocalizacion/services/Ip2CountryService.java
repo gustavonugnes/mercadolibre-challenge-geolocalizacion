@@ -22,7 +22,7 @@ public class Ip2CountryService {
     public Ip2CountryDto getCountryDataFake(String ip) {
         TypeReference<Ip2CountryDto> typeReference = new TypeReference<>() {
         };
-        InputStream inputStream = TypeReference.class.getResourceAsStream("/json/country.json");
+        InputStream inputStream = TypeReference.class.getResourceAsStream("/json/country(es).json");
         try {
             Ip2CountryDto dto = objectMapper.readValue(inputStream, typeReference);
 

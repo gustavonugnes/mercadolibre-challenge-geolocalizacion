@@ -1,0 +1,35 @@
+{
+  "ip": "134.201.250.155",
+  "type": "ipv4",
+  "continent_code": "NA",
+  "continent_name": "Norteamérica",
+  "country_code": "US",
+  "country_name": "Estados Unidos",
+  "region_code": "NV",
+  "region_name": "Nevada",
+  "city": "Spring Valley",
+  "zip": "89144",
+  "latitude": 36.174888610839844,
+  "longitude": -115.31849670410156,
+  "msa": "29820",
+  "dma": "839",
+  "radius": null,
+  "ip_routing_type": null,
+  "connection_type": null,
+  "location": {
+    "geoname_id": 5512909,
+    "capital": "Washington D.C.",
+    "languages": [
+      {
+        "code": "en",
+        "name": "English",
+        "native": "English"
+      }
+    ],
+    "country_flag": "https://assets.ipstack.com/flags/us.svg",
+    "country_flag_emoji": "🇺🇸",
+    "country_flag_emoji_unicode": "U+1F1FA U+1F1F8",
+    "calling_code": "1",
+    "is_eu": false
+  }
+}
