@@ -2,6 +2,8 @@ package com.gnugnes.mercadolibre_challenge_geolocalizacion.services;
 
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.Utils;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.CountryDto;
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.entities.Invocation;
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.repositories.InvocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +14,11 @@ import java.time.LocalDateTime;
 public class IpService {
 
     private final Ip2CountryService ip2CountryService;
+    private final InvocationRepository invocationRepository;
 
     public CountryDto getCountryData(String ip) {
-//        var data = ip2CountryService.getCountryDataFake(ip);
-        var data = ip2CountryService.getCountryData(ip);
+        var data = ip2CountryService.getCountryDataFake(ip);
+//        var data = ip2CountryService.getCountryData(ip);
 
         var countryDto = new CountryDto();
         countryDto.setIp(data.getIp());
@@ -34,6 +37,17 @@ public class IpService {
         countryDto.setCountryTime(null);
         countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));
 
+        Invocation invocation = invocationRepository.findByCountryCode(data.getCountryCode());
+        if(invocation == null) {
+            invocation = new Invocation();
+            invocation.setAmount(0L);
+        }
+
+        invocation.setCountryCode(data.getCountryCode());
+        invocation.setDistance(countryDto.getDistanceToBuenosAires());
+        invocation.setAmount(invocation.getAmount() + 1);
+
+        invocationRepository.save(invocation);
 
         return countryDto;
     }

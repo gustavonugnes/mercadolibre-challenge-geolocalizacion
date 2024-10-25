@@ -1,0 +1,40 @@
+{
+  "ip": "181.230.7.47",
+  "type": "ipv4",
+  "continent_code": "SA",
+  "continent_name": "Sudamerica",
+  "country_code": "AR",
+  "country_name": "Argentina",
+  "region_code": "B",
+  "region_name": "Provincia de Buenos Aires",
+  "city": "Quilmes",
+  "zip": "B1876",
+  "latitude": -34.707279205322266,
+  "longitude": -58.27180099487305,
+  "msa": null,
+  "dma": null,
+  "radius": null,
+  "ip_routing_type": "fixed",
+  "connection_type": "cable",
+  "location": {
+    "geoname_id": 3429652,
+    "capital": "Buenos Aires",
+    "languages": [
+      {
+        "code": "es",
+        "name": "Spanish",
+        "native": "Español"
+      },
+      {
+        "code": "gn",
+        "name": "Guarani",
+        "native": "Avañe'ẽ"
+      }
+    ],
+    "country_flag": "https://assets.ipstack.com/flags/ar.svg",
+    "country_flag_emoji": "🇦🇷",
+    "country_flag_emoji_unicode": "U+1F1E6 U+1F1F7",
+    "calling_code": "54",
+    "is_eu": false
+  }
+}

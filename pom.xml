@@ -40,6 +40,19 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<version>8.4.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-maven-plugin</artifactId>
+			<version>10.18.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -60,6 +73,19 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>10.18.2</version>
+				<configuration>
+					<user>root</user>
+					<password>vivid1</password>
+					<schemas>
+						<schema>geolocation</schema>
+					</schemas>
 				</configuration>
 			</plugin>
 		</plugins>
