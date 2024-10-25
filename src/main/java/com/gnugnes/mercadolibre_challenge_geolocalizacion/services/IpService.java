@@ -2,6 +2,7 @@ package com.gnugnes.mercadolibre_challenge_geolocalizacion.services;
 
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.Utils;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.CountryDto;
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.LanguageDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.entities.Invocation;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.repositories.InvocationRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +27,15 @@ public class IpService {
         countryDto.setName(data.getCountryName());
         countryDto.setIsoCode(data.getCountryCode());
 
-        if(data.getLocation() != null && data.getLocation().getLanguages() != null) {
-            var firstLanguage = data.getLocation().getLanguages().getFirst();
-            countryDto.setLanguage(firstLanguage.getName());
-            countryDto.setLanguage(firstLanguage.getCode());
+        if (data.getLocation() != null && data.getLocation().getLanguages() != null) {
+            countryDto.setLanguages(
+                    data.getLocation().getLanguages().stream().map(each -> {
+                        var languageDto = new LanguageDto();
+                        languageDto.setName(each.getName());
+                        languageDto.setCode(each.getCode());
+                        languageDto.setNativeName(each.getNativeName());
+                        return languageDto;
+                    }).toList());
         }
 
         countryDto.setCurrency(null);
@@ -38,7 +44,7 @@ public class IpService {
         countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));
 
         Invocation invocation = invocationRepository.findByCountryCode(data.getCountryCode());
-        if(invocation == null) {
+        if (invocation == null) {
             invocation = new Invocation();
             invocation.setAmount(0L);
         }

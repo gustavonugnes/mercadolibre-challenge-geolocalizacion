@@ -1,6 +1,6 @@
 package com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -57,6 +57,8 @@ public class Ip2CountryDto {
         public static class LanguageDto {
             private String code;
             private String name;
+
+            @JsonProperty("native")
             private String nativeName; // Changed 'native' to 'nativeName' to avoid conflict with Java keyword
         }
     }
