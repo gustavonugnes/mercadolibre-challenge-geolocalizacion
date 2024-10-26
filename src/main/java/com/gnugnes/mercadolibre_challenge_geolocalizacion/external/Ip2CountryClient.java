@@ -15,7 +15,7 @@ import java.io.InputStream;
 @Slf4j
 @Component
 //@RequiredArgsConstructor
-public class Ip2CountryService {
+public class Ip2CountryClient {
 
     private static final String BASE_URL = "http://api.ipapi.com";
     private static final String ACCESS_KEY = "20580b936a8be84b532774cf2f119ea6";
@@ -23,7 +23,7 @@ public class Ip2CountryService {
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 
-    public Ip2CountryService(ObjectMapper objectMapper) {
+    public Ip2CountryClient(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
 
         this.webClient = WebClient.builder()
@@ -35,7 +35,7 @@ public class Ip2CountryService {
     public Ip2CountryDto getCountryDataFake(String ip) {
         TypeReference<Ip2CountryDto> typeReference = new TypeReference<>() {
         };
-        InputStream inputStream = TypeReference.class.getResourceAsStream("/json/country.json");
+        InputStream inputStream = TypeReference.class.getResourceAsStream("/json/country_ar.json");
         try {
             return objectMapper.readValue(inputStream, typeReference);
         } catch (IOException e) {

@@ -1,5 +1,8 @@
 package com.gnugnes.mercadolibre_challenge_geolocalizacion;
 
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.ExchangeRatesDto;
+
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -8,12 +11,16 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import static java.math.RoundingMode.UP;
+
 public class Utils {
 
     private static final double EARTH_RADIUS = 6371;
 
     private static final double BUENOS_AIRES_LAT = -34.61315;
     private static final double BUENOS_AIRES_LON = -58.37723;
+
+    private static final String USD_CODE = "USD";
 
     private Utils() {
 
@@ -61,5 +68,16 @@ public class Utils {
                     var localTime = zonedDateTime.format(offsetFormatter);
                     return utcTime + " or " + localTime;
                 }).toList();
+    }
+
+    public static BigDecimal getDollarExchangeRate(ExchangeRatesDto dto, String currencyCode) {
+        var rates = dto.getRates();
+        if(rates == null || rates.isEmpty() || !rates.containsKey(USD_CODE) || !rates.containsKey(currencyCode)) {
+            return null;
+        }
+
+        var eurToUsdRate = rates.get(USD_CODE);
+        var currencyToEur = rates.get(currencyCode);
+        return eurToUsdRate.divide(currencyToEur, 6, UP);
     }
 }

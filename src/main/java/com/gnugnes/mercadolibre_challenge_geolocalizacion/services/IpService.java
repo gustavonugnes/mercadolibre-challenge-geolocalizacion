@@ -4,7 +4,8 @@ import com.gnugnes.mercadolibre_challenge_geolocalizacion.Utils;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.CountryDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.LanguageDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.entities.Invocation;
-import com.gnugnes.mercadolibre_challenge_geolocalizacion.external.Ip2CountryService;
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.external.FixerClient;
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.external.Ip2CountryClient;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.repositories.InvocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,12 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class IpService {
 
-    private final Ip2CountryService ip2CountryService;
+    private final Ip2CountryClient ip2CountryClient;
+    private final FixerClient fixerClient;
     private final InvocationRepository invocationRepository;
 
     public CountryDto getCountryData(String ip) {
-        var data = ip2CountryService.getCountryDataFake(ip);
+        var data = ip2CountryClient.getCountryDataFake(ip);
 //        var data = ip2CountryService.getCountryData(ip);
 
         var countryDto = new CountryDto();
@@ -47,7 +49,7 @@ public class IpService {
 
         countryDto.setCurrencyCode(currency.getCurrencyCode());
         countryDto.setCurrencyName(currency.getDisplayName());
-        countryDto.setCurrencyExchangeRateWithUsDollar(null);
+        countryDto.setCurrencyExchangeRateWithUsDollar(Utils.getDollarExchangeRate(fixerClient.getExchangeRatesFake(), currency.getCurrencyCode()));
 
 
         countryDto.setTimeZones(Utils.getCurrentTimesByCountry(data.getCountryCode()));
