@@ -55,6 +55,7 @@ public class IpService {
          So, as a workaround I get the EUR/USD and {currentCurrency}/EUR and then divide them
          to get the {currentCurrency}/USD that is needed.
         */
+//        countryDto.setCurrencyExchangeRateWithUsDollar(Utils.getDollarExchangeRate(fixerClient.getExchangeRates(), currency.getCurrencyCode()));
         countryDto.setCurrencyExchangeRateWithUsDollar(Utils.getDollarExchangeRate(fixerClient.getExchangeRatesFake(), currency.getCurrencyCode()));
 
 

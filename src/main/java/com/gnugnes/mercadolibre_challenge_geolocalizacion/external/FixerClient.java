@@ -31,6 +31,18 @@ public class FixerClient {
                 .build();
     }
 
+    public ExchangeRatesDto getExchangeRates() {
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/latest")
+                        .queryParam("access_key", ACCESS_KEY)
+                        .build())
+                .retrieve()
+                .bodyToMono(ExchangeRatesDto.class)
+                .block();
+    }
+
     public ExchangeRatesDto getExchangeRatesFake() {
         TypeReference<ExchangeRatesDto> typeReference = new TypeReference<>() {
         };
