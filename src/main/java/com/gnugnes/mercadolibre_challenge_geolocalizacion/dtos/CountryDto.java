@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,13 +18,13 @@ public class CountryDto {
 
     private String ip;
     private LocalDateTime localDateTime;
-    private List<String> timeZones;
+    private Set<String> timeZones;
     private String name;
     private String isoCode;
     private List<LanguageDto> languages;
     private String currencyCode;
     private String currencyName;
     private BigDecimal currencyExchangeRateWithUsDollar;
-    private double distanceToBuenosAires;
+    private Double distanceToBuenosAires;
 
 }

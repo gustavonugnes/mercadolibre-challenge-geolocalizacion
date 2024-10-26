@@ -49,10 +49,23 @@ public class IpService {
 
         countryDto.setCurrencyCode(currency.getCurrencyCode());
         countryDto.setCurrencyName(currency.getDisplayName());
+
+        /* The data I can get via the "Fixer" Service with a free plan just allows to get
+         exchanges rates based on the Euro. In order to change it a would need a paid plan.
+         So, as a workaround I get the EUR/USD and {currentCurrency}/EUR and then divide them
+         to get the {currentCurrency}/USD that is needed.
+        */
         countryDto.setCurrencyExchangeRateWithUsDollar(Utils.getDollarExchangeRate(fixerClient.getExchangeRatesFake(), currency.getCurrencyCode()));
 
 
-        countryDto.setTimeZones(Utils.getCurrentTimesByCountry(data.getCountryCode()));
+        /* Similar to what was mentioned above.
+        * I am not able to get the timezone data neither from the  "IP2Country (IpApi)" service nor from
+        * the "Country Layer" Service using a free plan.
+        * As a workaround for that issue I try to find the timezones vía the country's name and code name.
+        * See details in the Utils class.
+        * Please keep in mind This approach will not work for all cases.
+        * */
+        countryDto.setTimeZones(Utils.getCurrentTimesByCountry(data.getCountryCode(), data.getCountryName()));
 
 
         countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));

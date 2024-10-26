@@ -8,8 +8,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Currency;
-import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.math.RoundingMode.UP;
 
@@ -49,7 +50,7 @@ public class Utils {
         return Currency.getInstance(locale);
     }
 
-    public static List<String> getCurrentTimesByCountry(String countryCode) {
+    public static Set<String> getCurrentTimesByCountry(String countryCode, String countryName) {
         var now = Instant.now();
 
         var locale = Locale.of("", countryCode);
@@ -60,14 +61,27 @@ public class Utils {
         // Formatter for UTC with offset (e.g., "21:01:23 (UTC+01:00)")
         var offsetFormatter = DateTimeFormatter.ofPattern("HH:mm:ss '(UTC'xxx')'");
 
-        return ZoneId.getAvailableZoneIds().stream()
+        var zones = ZoneId.getAvailableZoneIds().stream()
                 .filter(zoneId -> zoneId.startsWith(locale.getCountry()))
+                .toList();
+
+        if(zones.isEmpty()) {
+            zones = ZoneId.getAvailableZoneIds().stream()
+                    .filter(zoneId -> zoneId.contains(countryName))
+                    .toList();
+
+            if(zones.isEmpty()) {
+                return null;
+            }
+        }
+
+        return zones.stream()
                 .map(zoneId -> {
                     var zonedDateTime = ZonedDateTime.ofInstant(now, ZoneId.of(zoneId));
                     var utcTime = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC")).format(utcFormatter);
                     var localTime = zonedDateTime.format(offsetFormatter);
                     return utcTime + " or " + localTime;
-                }).toList();
+                }).collect(Collectors.toSet());
     }
 
     public static BigDecimal getDollarExchangeRate(ExchangeRatesDto dto, String currencyCode) {
