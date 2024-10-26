@@ -25,6 +25,6 @@ public class CountryDto {
     private String currencyCode;
     private String currencyName;
     private BigDecimal currencyExchangeRateWithUsDollar;
-    private Double distanceToBuenosAires;
+    private String distanceToBuenosAires;
 
 }

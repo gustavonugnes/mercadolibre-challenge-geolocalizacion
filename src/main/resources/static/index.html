@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de Geolocalización</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa; /* Light background color */
+        }
+        h1 {
+            color: #333; /* Darker heading color */
+        }
+        h2 {
+            margin-top: 30px; /* Space above section headings */
+            color: #555; /* Slightly lighter heading color */
+        }
+        label {
+            margin-right: 10px;
+        }
+        #loading, #distanceLoading {
+            display: none;
+            margin-top: 10px;
+            color: blue;
+        }
+        #ipResult, #distanceResult {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc; /* Light border around results */
+            background-color: #fff; /* White background for results */
+            border-radius: 5px; /* Slightly rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            white-space: pre-line; /* Preserve whitespace for formatted output */
+        }
+        #distanceResult {
+            font-weight: bold;
+        }
+        button {
+            margin-top: 10px;
+            margin-right: 5px;
+            padding: 8px 12px; /* Added padding for better button appearance */
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff; /* Bootstrap primary color */
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        .section {
+            margin-bottom: 40px; /* Space between sections */
+            padding: 20px;
+            background-color: #e9ecef; /* Light grey background for sections */
+            border-radius: 5px; /* Slightly rounded corners */
+        }
+        .language {
+            font-style: italic; /* Italic style for languages */
+            color: #555; /* Darker color for languages */
+        }
+    </style>
+    <script>
+        async function requestIpData() {
+            const ip = document.getElementById("ipInput").value;
+            const loadingIndicator = document.getElementById("loading");
+            const resultDiv = document.getElementById("ipResult");
+
+            loadingIndicator.style.display = 'block'; // Show loading indicator
+            resultDiv.innerHTML = ''; // Clear previous results
+
+            try {
+                const response = await fetch('/ips/' + encodeURIComponent(ip), {
+                    method: 'GET',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error fetching data: ' + response.status);
+                }
+
+                const data = await response.json(); // Parse the JSON response
+
+                // Parse distanceToBuenosAires from string format
+                const distanceParts = data.distanceToBuenosAires.split(' ');
+                const distance = parseFloat(distanceParts[0]); // Extract the numerical distance
+                const coordinates = distanceParts.slice(2).join(' '); // Extract coordinates part
+
+                // Format the result according to the desired style
+                const resultHtml = `
+IP: ${data.ip},
+Fecha actual: ${new Date(data.localDateTime).toLocaleString('es-ES')}
+País: ${data.name} (${data.name.toLowerCase()})
+ISO Code: ${data.isoCode}
+Idiomas:
+${data.languages.map(lang => `<span class="language">${lang.nativeName} (${lang.code})</span>`).join("\n")}
+Moneda: ${data.currencyCode} (1 ${data.currencyCode} = ${data.currencyExchangeRateWithUsDollar.toFixed(4)} U$S)
+Hora: ${data.timeZones.join(", ")}
+Distancia estimada: ${distance.toFixed(2)} kms ${coordinates}
+                `;
+                resultDiv.innerHTML = resultHtml; // Update the HTML with formatted data
+            } catch (error) {
+                resultDiv.innerHTML = `<span style="color:red;">${error.message}</span>`; // Show error message
+            } finally {
+                loadingIndicator.style.display = 'none'; // Hide loading indicator
+            }
+        }
+
+        async function fetchDistanceStatistics(endpoint) {
+            const loadingIndicator = document.getElementById("distanceLoading");
+            const distanceResultDiv = document.getElementById("distanceResult");
+
+            loadingIndicator.style.display = 'block'; // Show loading indicator for distance
+            distanceResultDiv.innerHTML = ''; // Clear previous distance results
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'GET',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error fetching distance data: ' + response.status);
+                }
+
+                const distance = await response.text(); // Parse the response as text
+                const distanceNum = parseFloat(distance); // Convert the text response to a number
+
+                // Display the result in the distance result div
+                const resultHtml = `Distancia a Buenos Aires: ${distanceNum.toFixed(2)} kms`;
+                distanceResultDiv.innerHTML = resultHtml; // Update the HTML with the distance
+            } catch (error) {
+                distanceResultDiv.innerHTML = `<span style="color:red;">${error.message}</span>`; // Show error message
+            } finally {
+                loadingIndicator.style.display = 'none'; // Hide loading indicator for distance
+            }
+        }
+
+        function getMinDistance() {
+            fetchDistanceStatistics('http://localhost:8080/statistics/min');
+        }
+
+        function getMaxDistance() {
+            fetchDistanceStatistics('http://localhost:8080/statistics/max');
+        }
+
+        function getAverageDistance() {
+            fetchDistanceStatistics('http://localhost:8080/statistics/average');
+        }
+    </script>
+</head>
+<body>
+<h1>App de Geolocalización</h1>
+
+<div class="section">
+    <h2>Buscar datos por IP</h2>
+
+    <form onsubmit="event.preventDefault(); requestIpData();">
+        <label for="ipInput">Ingresar dirección IP:</label>
+        <input type="text" id="ipInput" placeholder="e.g., 134.201.250.155" required>
+        <button type="submit">Buscar</button>
+    </form>
+
+    <div id="loading">Cargando...</div> <!-- Loading indicator for IP data -->
+
+    <div id="ipResult"></div> <!-- Results will be displayed here -->
+</div>
+
+<div class="section">
+    <h2>Estadísticas de utilización</h2>
+    <button onclick="getMinDistance()">Distancia Menor</button>
+    <button onclick="getMaxDistance()">Distancia Mayor</button>
+    <button onclick="getAverageDistance()">Distancia Promedio</button>
+
+    <div id="distanceLoading">Cargando distancia...</div> <!-- Loading indicator for distance statistics -->
+    <div id="distanceResult"></div> <!-- New div for distance results -->
+</div>
+</body>
+</html>

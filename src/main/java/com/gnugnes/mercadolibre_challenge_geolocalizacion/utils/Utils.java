@@ -27,6 +27,11 @@ public class Utils {
 
     }
 
+    public static String distanceFromBuenosAiresFormatted(double lat1, double lon1) {
+        var distance = calculateDistance(BUENOS_AIRES_LAT, BUENOS_AIRES_LON, lat1, lon1);
+        return distance + " kms (" + BUENOS_AIRES_LAT + ", " + BUENOS_AIRES_LON + ") a (" + lat1 + ", " + lon1 + ")";
+    }
+
     public static double distanceFromBuenosAires(double lat1, double lon1) {
         return calculateDistance(BUENOS_AIRES_LAT, BUENOS_AIRES_LON, lat1, lon1);
     }
