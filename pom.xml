@@ -95,7 +95,7 @@
                 <version>10.18.2</version>
                 <configuration>
                     <user>root</user>
-                    <password>vivid1</password>
+                    <password>test1234</password>
                     <schemas>
                         <schema>geolocation</schema>
                     </schemas>
