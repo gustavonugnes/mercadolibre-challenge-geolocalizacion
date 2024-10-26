@@ -4,6 +4,7 @@ import com.gnugnes.mercadolibre_challenge_geolocalizacion.Utils;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.CountryDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.LanguageDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.entities.Invocation;
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.external.Ip2CountryService;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.repositories.InvocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,14 @@ public class IpService {
                     }).toList());
         }
 
-        countryDto.setCurrency(null);
+        /* Originally I wanted to get the currency of the country via the "IP2Country (IpApi)" service.
+        However, the free plan I have does not return the currency data. (Requires a paid plan)
+        So I implemented a workaround using just Java code, as you can see in the Utils class.
+        */
+        var currency = Utils.getCurrencyByCountryCode(data.getCountryCode());
+
+        countryDto.setCurrencyCode(currency.getCurrencyCode());
+        countryDto.setCurrencyName(currency.getDisplayName());
         countryDto.setCurrencyExchangeRateWithUsDollar(null);
         countryDto.setCountryTime(null);
         countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));

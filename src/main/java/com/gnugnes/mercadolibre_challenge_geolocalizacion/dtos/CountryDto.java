@@ -22,8 +22,8 @@ public class CountryDto {
     private String name;
     private String isoCode;
     private List<LanguageDto> languages;
-    private String languageCode;
-    private String currency;
+    private String currencyCode;
+    private String currencyName;
     private BigDecimal currencyExchangeRateWithUsDollar;
     private double distanceToBuenosAires;
 

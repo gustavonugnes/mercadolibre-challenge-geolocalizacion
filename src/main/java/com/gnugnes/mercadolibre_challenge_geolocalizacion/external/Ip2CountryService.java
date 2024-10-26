@@ -1,4 +1,4 @@
-package com.gnugnes.mercadolibre_challenge_geolocalizacion.services;
+package com.gnugnes.mercadolibre_challenge_geolocalizacion.external;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,14 +6,14 @@ import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.Ip2CountryDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
-@Service
+@Component
 //@RequiredArgsConstructor
 public class Ip2CountryService {
 

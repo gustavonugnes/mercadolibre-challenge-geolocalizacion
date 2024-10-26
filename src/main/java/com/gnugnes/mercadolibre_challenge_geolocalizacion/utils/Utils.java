@@ -1,5 +1,8 @@
 package com.gnugnes.mercadolibre_challenge_geolocalizacion;
 
+import java.util.Currency;
+import java.util.Locale;
+
 public class Utils {
 
     private static final double EARTH_RADIUS = 6371;
@@ -27,5 +30,10 @@ public class Utils {
         double y = (lat2Rad - lat1Rad);
 
         return Math.sqrt(x * x + y * y) * EARTH_RADIUS;
+    }
+
+    public static Currency getCurrencyByCountryCode(String countryCode) {
+        var locale = Locale.of("", countryCode);
+        return Currency.getInstance(locale);
     }
 }
