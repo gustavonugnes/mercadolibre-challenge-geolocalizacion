@@ -1,6 +1,11 @@
 package com.gnugnes.mercadolibre_challenge_geolocalizacion;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Currency;
+import java.util.List;
 import java.util.Locale;
 
 public class Utils {
@@ -35,5 +40,26 @@ public class Utils {
     public static Currency getCurrencyByCountryCode(String countryCode) {
         var locale = Locale.of("", countryCode);
         return Currency.getInstance(locale);
+    }
+
+    public static List<String> getCurrentTimesByCountry(String countryCode) {
+        var now = Instant.now();
+
+        var locale = Locale.of("", countryCode);
+
+        // Formatter for UTC format (e.g., "20:01:23 (UTC)")
+        var utcFormatter = DateTimeFormatter.ofPattern("HH:mm:ss '(UTC)'");
+
+        // Formatter for UTC with offset (e.g., "21:01:23 (UTC+01:00)")
+        var offsetFormatter = DateTimeFormatter.ofPattern("HH:mm:ss '(UTC'xxx')'");
+
+        return ZoneId.getAvailableZoneIds().stream()
+                .filter(zoneId -> zoneId.startsWith(locale.getCountry()))
+                .map(zoneId -> {
+                    var zonedDateTime = ZonedDateTime.ofInstant(now, ZoneId.of(zoneId));
+                    var utcTime = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC")).format(utcFormatter);
+                    var localTime = zonedDateTime.format(offsetFormatter);
+                    return utcTime + " or " + localTime;
+                }).toList();
     }
 }

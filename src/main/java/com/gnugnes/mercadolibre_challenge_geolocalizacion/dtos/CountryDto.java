@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class CountryDto {
 
     private String ip;
     private LocalDateTime localDateTime;
-    private Instant countryTime;
+    private List<String> timeZones;
     private String name;
     private String isoCode;
     private List<LanguageDto> languages;

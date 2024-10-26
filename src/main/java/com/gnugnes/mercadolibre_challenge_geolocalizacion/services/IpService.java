@@ -48,7 +48,11 @@ public class IpService {
         countryDto.setCurrencyCode(currency.getCurrencyCode());
         countryDto.setCurrencyName(currency.getDisplayName());
         countryDto.setCurrencyExchangeRateWithUsDollar(null);
-        countryDto.setCountryTime(null);
+
+
+        countryDto.setTimeZones(Utils.getCurrentTimesByCountry(data.getCountryCode()));
+
+
         countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));
 
         Invocation invocation = invocationRepository.findByCountryCode(data.getCountryCode());
