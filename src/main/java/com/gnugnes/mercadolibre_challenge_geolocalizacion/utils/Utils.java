@@ -16,10 +16,10 @@ import static java.math.RoundingMode.UP;
 
 public class Utils {
 
-    private static final double EARTH_RADIUS = 6371;
+    public static final double BUENOS_AIRES_LAT = -34.61315;
+    public static final double BUENOS_AIRES_LON = -58.37723;
 
-    private static final double BUENOS_AIRES_LAT = -34.61315;
-    private static final double BUENOS_AIRES_LON = -58.37723;
+    private static final double EARTH_RADIUS = 6371;
 
     private static final String USD_CODE = "USD";
 

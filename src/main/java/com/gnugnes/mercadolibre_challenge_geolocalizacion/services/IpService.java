@@ -68,7 +68,12 @@ public class IpService {
         * */
         countryDto.setTimeZones(Utils.getCurrentTimesByCountry(data.getCountryCode(), data.getCountryName()));
 
-        countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAiresFormatted(data.getLatitude(), data.getLongitude()));
+
+        countryDto.setLatitude(data.getLatitude());
+        countryDto.setLongitude(data.getLongitude());
+        countryDto.setBuenosAiresLatitude(Utils.BUENOS_AIRES_LAT);
+        countryDto.setBuenosAiresLongitude(Utils.BUENOS_AIRES_LON);
+        countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));
 
         Invocation invocation = invocationRepository.findByCountryCode(data.getCountryCode());
         if (invocation == null) {
