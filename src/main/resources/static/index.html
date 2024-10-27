@@ -56,10 +56,6 @@
             background-color: #e9ecef; /* Light grey background for sections */
             border-radius: 5px; /* Slightly rounded corners */
         }
-        .language {
-            font-style: italic; /* Italic style for languages */
-            color: #555; /* Darker color for languages */
-        }
     </style>
     <script>
         async function requestIpData() {
@@ -67,8 +63,8 @@
             const loadingIndicator = document.getElementById("loading");
             const resultDiv = document.getElementById("ipResult");
 
-            loadingIndicator.style.display = 'block'; // Show loading indicator
-            resultDiv.innerHTML = ''; // Clear previous results
+            loadingIndicator.style.display = 'block';
+            resultDiv.innerHTML = '';
 
             try {
                 const response = await fetch('/ips/' + encodeURIComponent(ip), {
@@ -79,30 +75,41 @@
                     throw new Error('Error fetching data: ' + response.status);
                 }
 
-                const data = await response.json(); // Parse the JSON response
+                const data = await response.json();
 
-                // Parse distanceToBuenosAires from string format
+                // Parse distance and coordinates
                 const distanceParts = data.distanceToBuenosAires.split(' ');
-                const distance = parseFloat(distanceParts[0]); // Extract the numerical distance
-                const coordinates = distanceParts.slice(2).join(' '); // Extract coordinates part
+                const distance = parseFloat(distanceParts[0]);
+                const coordinates = distanceParts.slice(2).join(' ');
 
-                // Format the result according to the desired style
+                // Format timezones as primary UTC and an alternative with offset
+                const formattedTimeZones = data.timeZones.map(timezone => {
+                    const date = new Date(timezone);
+                    const utcTime = date.toLocaleTimeString('es-ES', { timeZone: 'UTC', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    const localTime = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    const offsetHours = -(date.getTimezoneOffset() / 60);
+                    const offset = offsetHours === 0 ? "UTC" : `UTC${offsetHours > 0 ? `+${offsetHours}` : offsetHours}`;
+
+                    return `${utcTime} (UTC) o ${localTime} (${offset})`;
+                }).join(", ");
+
+                // Format the result
                 const resultHtml = `
-IP: ${data.ip},
-Fecha actual: ${new Date(data.localDateTime).toLocaleString('es-ES')}
-País: ${data.name} (${data.name.toLowerCase()})
-ISO Code: ${data.isoCode}
-Idiomas:
-${data.languages.map(lang => `<span class="language">${lang.nativeName} (${lang.code})</span>`).join("\n")}
-Moneda: ${data.currencyCode} (1 ${data.currencyCode} = ${data.currencyExchangeRateWithUsDollar.toFixed(4)} U$S)
-Hora: ${data.timeZones.join(", ")}
-Distancia estimada: ${distance.toFixed(2)} kms ${coordinates}
+    IP: ${data.ip},
+    Fecha actual: ${new Date(data.localDateTime).toLocaleString('es-ES')}
+    País: ${data.name} (${data.name.toLowerCase()})
+    ISO Code: ${data.isoCode}
+    Idiomas:
+    ${data.languages.map(lang => `${lang.nativeName} (${lang.code})`).join(",")}
+    Moneda: ${data.currencyCode} (1 ${data.currencyCode} = ${data.currencyExchangeRateWithUsDollar.toFixed(4)} U$S)
+    Hora: ${formattedTimeZones}
+    Distancia estimada: ${distance.toFixed(2)} kms ${coordinates}
                 `;
-                resultDiv.innerHTML = resultHtml; // Update the HTML with formatted data
+                resultDiv.innerHTML = resultHtml;
             } catch (error) {
-                resultDiv.innerHTML = `<span style="color:red;">${error.message}</span>`; // Show error message
+                resultDiv.innerHTML = `<span style="color:red;">${error.message}</span>`;
             } finally {
-                loadingIndicator.style.display = 'none'; // Hide loading indicator
+                loadingIndicator.style.display = 'none';
             }
         }
 

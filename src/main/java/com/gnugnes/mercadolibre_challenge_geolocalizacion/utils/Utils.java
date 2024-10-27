@@ -83,9 +83,7 @@ public class Utils {
         return zones.stream()
                 .map(zoneId -> {
                     var zonedDateTime = ZonedDateTime.ofInstant(now, ZoneId.of(zoneId));
-                    var utcTime = zonedDateTime.withZoneSameInstant(ZoneId.of("UTC")).format(utcFormatter);
-                    var localTime = zonedDateTime.format(offsetFormatter);
-                    return utcTime + " or " + localTime;
+                    return zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
                 }).collect(Collectors.toSet());
     }
 
