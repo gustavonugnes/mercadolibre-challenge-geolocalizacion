@@ -1,6 +1,7 @@
-package com.gnugnes.mercadolibre_challenge_geolocalizacion;
+package com.gnugnes.mercadolibre_challenge_geolocalizacion.services;
 
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.ExchangeRatesDto;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,7 +15,8 @@ import java.util.stream.Collectors;
 
 import static java.math.RoundingMode.UP;
 
-public class Utils {
+@Service
+public class UtilsService {
 
     public static final double BUENOS_AIRES_LAT = -34.61315;
     public static final double BUENOS_AIRES_LON = -58.37723;
@@ -23,22 +25,13 @@ public class Utils {
 
     private static final String USD_CODE = "USD";
 
-    private Utils() {
-
-    }
-
-    public static String distanceFromBuenosAiresFormatted(double lat1, double lon1) {
-        var distance = calculateDistance(BUENOS_AIRES_LAT, BUENOS_AIRES_LON, lat1, lon1);
-        return distance + " kms (" + BUENOS_AIRES_LAT + ", " + BUENOS_AIRES_LON + ") a (" + lat1 + ", " + lon1 + ")";
-    }
-
-    public static double distanceFromBuenosAires(double lat1, double lon1) {
-        return calculateDistance(BUENOS_AIRES_LAT, BUENOS_AIRES_LON, lat1, lon1);
+    public Double getDistanceFromBuenosAires(Double lat, Double lon) {
+        return calculateDistance(BUENOS_AIRES_LAT, BUENOS_AIRES_LON, lat, lon);
     }
 
     // Uses the Equirectangular Distance Approximation
     // Not extremely accurate but very fast, so it should be enough for the purposes of this application
-    public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    public Double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         double lat1Rad = Math.toRadians(lat1);
         double lat2Rad = Math.toRadians(lat2);
         double lon1Rad = Math.toRadians(lon1);
@@ -50,21 +43,14 @@ public class Utils {
         return Math.sqrt(x * x + y * y) * EARTH_RADIUS;
     }
 
-    public static Currency getCurrencyByCountryCode(String countryCode) {
+    public Currency getCurrencyByCountryCode(String countryCode) {
         var locale = Locale.of("", countryCode);
         return Currency.getInstance(locale);
     }
 
-    public static Set<String> getCurrentTimesByCountry(String countryCode, String countryName) {
+    public Set<String> getCurrentTimesByCountry(String countryCode, String countryName) {
         var now = Instant.now();
-
         var locale = Locale.of("", countryCode);
-
-        // Formatter for UTC format (e.g., "20:01:23 (UTC)")
-        var utcFormatter = DateTimeFormatter.ofPattern("HH:mm:ss '(UTC)'");
-
-        // Formatter for UTC with offset (e.g., "21:01:23 (UTC+01:00)")
-        var offsetFormatter = DateTimeFormatter.ofPattern("HH:mm:ss '(UTC'xxx')'");
 
         var zones = ZoneId.getAvailableZoneIds().stream()
                 .filter(zoneId -> zoneId.startsWith(locale.getCountry()))
@@ -87,7 +73,7 @@ public class Utils {
                 }).collect(Collectors.toSet());
     }
 
-    public static BigDecimal getDollarExchangeRate(ExchangeRatesDto dto, String currencyCode) {
+    public BigDecimal getDollarExchangeRate(ExchangeRatesDto dto, String currencyCode) {
         var rates = dto.getRates();
         if(rates == null || rates.isEmpty() || !rates.containsKey(USD_CODE) || !rates.containsKey(currencyCode)) {
             return null;

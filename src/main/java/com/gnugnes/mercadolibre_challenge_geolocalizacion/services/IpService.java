@@ -1,6 +1,5 @@
 package com.gnugnes.mercadolibre_challenge_geolocalizacion.services;
 
-import com.gnugnes.mercadolibre_challenge_geolocalizacion.Utils;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.CountryDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.LanguageDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.entities.Invocation;
@@ -12,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.gnugnes.mercadolibre_challenge_geolocalizacion.services.UtilsService.BUENOS_AIRES_LAT;
+import static com.gnugnes.mercadolibre_challenge_geolocalizacion.services.UtilsService.BUENOS_AIRES_LON;
+
 @Service
 @RequiredArgsConstructor
 public class IpService {
@@ -19,10 +21,11 @@ public class IpService {
     private final Ip2CountryClient ip2CountryClient;
     private final FixerClient fixerClient;
     private final InvocationRepository invocationRepository;
+    private final UtilsService utilsService;
 
     public CountryDto getCountryData(String ip) {
-        var data = ip2CountryClient.getCountryDataFake(ip);
-//        var data = ip2CountryService.getCountryData(ip);
+//        var data = ip2CountryClient.getCountryDataFake(ip);
+        var data = ip2CountryClient.getCountryData(ip);
 
         var countryDto = new CountryDto();
         countryDto.setIp(data.getIp());
@@ -45,7 +48,7 @@ public class IpService {
         However, the free plan I have does not return the currency data. (Requires a paid plan)
         So I implemented a workaround using just Java code, as you can see in the Utils class.
         */
-        var currency = Utils.getCurrencyByCountryCode(data.getCountryCode());
+        var currency = utilsService.getCurrencyByCountryCode(data.getCountryCode());
 
         countryDto.setCurrencyCode(currency.getCurrencyCode());
         countryDto.setCurrencyName(currency.getDisplayName());
@@ -55,8 +58,10 @@ public class IpService {
          So, as a workaround I get the EUR/USD and {currentCurrency}/EUR and then divide them
          to get the {currentCurrency}/USD that is needed.
         */
-//        countryDto.setCurrencyExchangeRateWithUsDollar(Utils.getDollarExchangeRate(fixerClient.getExchangeRates(), currency.getCurrencyCode()));
-        countryDto.setCurrencyExchangeRateWithUsDollar(Utils.getDollarExchangeRate(fixerClient.getExchangeRatesFake(), currency.getCurrencyCode()));
+        countryDto.setCurrencyExchangeRateWithUsDollar(
+                utilsService.getDollarExchangeRate(fixerClient.getExchangeRates(),
+                        currency.getCurrencyCode()));
+//        countryDto.setCurrencyExchangeRateWithUsDollar(Utils.getDollarExchangeRate(fixerClient.getExchangeRatesFake(), currency.getCurrencyCode()));
 
 
         /* Similar to what was mentioned above.
@@ -66,23 +71,25 @@ public class IpService {
         * See details in the Utils class.
         * Please keep in mind This approach will not work for all cases.
         * */
-        countryDto.setTimeZones(Utils.getCurrentTimesByCountry(data.getCountryCode(), data.getCountryName()));
+        countryDto.setTimeZones(utilsService.getCurrentTimesByCountry(data.getCountryCode(), data.getCountryName()));
 
+        var distanceFromBuenosAires = utilsService.getDistanceFromBuenosAires(
+                data.getLatitude(), data.getLongitude());
 
         countryDto.setLatitude(data.getLatitude());
         countryDto.setLongitude(data.getLongitude());
-        countryDto.setBuenosAiresLatitude(Utils.BUENOS_AIRES_LAT);
-        countryDto.setBuenosAiresLongitude(Utils.BUENOS_AIRES_LON);
-        countryDto.setDistanceToBuenosAires(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));
+        countryDto.setBuenosAiresLatitude(BUENOS_AIRES_LAT);
+        countryDto.setBuenosAiresLongitude(BUENOS_AIRES_LON);
+        countryDto.setDistanceToBuenosAires(distanceFromBuenosAires);
 
-        Invocation invocation = invocationRepository.findByCountryCode(data.getCountryCode());
+        var invocation = invocationRepository.findByCountryCode(data.getCountryCode());
         if (invocation == null) {
             invocation = new Invocation();
             invocation.setAmount(0L);
         }
 
         invocation.setCountryCode(data.getCountryCode());
-        invocation.setDistance(Utils.distanceFromBuenosAires(data.getLatitude(), data.getLongitude()));
+        invocation.setDistance(distanceFromBuenosAires);
         invocation.setAmount(invocation.getAmount() + 1);
 
         invocationRepository.save(invocation);
