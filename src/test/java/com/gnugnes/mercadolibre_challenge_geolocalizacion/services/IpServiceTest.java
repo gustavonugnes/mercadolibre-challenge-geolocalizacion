@@ -1,11 +1,12 @@
 package com.gnugnes.mercadolibre_challenge_geolocalizacion.services;
 
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.clients.FixerClient;
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.clients.Ip2CountryClient;
+import com.gnugnes.mercadolibre_challenge_geolocalizacion.config.MockConfig;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.ExchangeRatesDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.Ip2CountryDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos.LanguageDto;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.entities.Invocation;
-import com.gnugnes.mercadolibre_challenge_geolocalizacion.external.FixerClient;
-import com.gnugnes.mercadolibre_challenge_geolocalizacion.external.Ip2CountryClient;
 import com.gnugnes.mercadolibre_challenge_geolocalizacion.repositories.InvocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,9 @@ class IpServiceTest {
     @Mock
     private UtilsService utilsService;
 
+    @Mock
+    private MockConfig mockConfig;
+
     @Captor
     private ArgumentCaptor<Invocation> invocationArgumentCaptor;
 
@@ -71,6 +75,7 @@ class IpServiceTest {
 
         var currency = Currency.getInstance(Locale.of("es", "AR"));
 
+        when(mockConfig.isEnabled()).thenReturn(false);
         when(ip2CountryClient.getCountryData("134.201.250.152")).thenReturn(ip2CountryDto);
         when(utilsService.getCurrencyByCountryCode("AR")).thenReturn(currency);
         when(utilsService.getCurrentTimesByCountry("AR", "Argentina")).
