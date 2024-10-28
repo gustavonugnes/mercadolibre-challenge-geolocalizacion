@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,5 +39,17 @@ class IpControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json; charset=utf-8"))
                 .andExpect(content().json(objectMapper.writeValueAsString(countryDto)));
+
+        verify(ipService).getCountryData("8.8.8.8");
+    }
+
+    @Test
+    void getIpData_shouldReturnCountryDto_invalidFormat() throws Exception {
+        var ip = "1234";
+
+        mockMvc.perform(get("/ips/{ip}", ip))
+                .andExpect(status().isBadRequest());
+
+        verify(ipService, never()).getCountryData(anyString());
     }
 }
