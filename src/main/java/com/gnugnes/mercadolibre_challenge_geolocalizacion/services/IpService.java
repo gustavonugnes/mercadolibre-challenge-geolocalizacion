@@ -24,7 +24,7 @@ public class IpService {
     private final UtilsService utilsService;
 
     public CountryDto getCountryData(String ip) {
-//        var data = ip2CountryClient.getCountryDataFake(ip);
+//        var data = ip2CountryClient.getCountryDataMock(ip);
         var data = ip2CountryClient.getCountryData(ip);
 
         var countryDto = new CountryDto();
@@ -34,14 +34,13 @@ public class IpService {
         countryDto.setIsoCode(data.getCountryCode());
 
         if (data.getLocation() != null && data.getLocation().getLanguages() != null) {
-            countryDto.setLanguages(
-                    data.getLocation().getLanguages().stream().map(each -> {
-                        var languageDto = new LanguageDto();
-                        languageDto.setName(each.getName());
-                        languageDto.setCode(each.getCode());
-                        languageDto.setNativeName(each.getNativeName());
-                        return languageDto;
-                    }).toList());
+            countryDto.setLanguages(data.getLocation().getLanguages().stream().map(each -> {
+                var languageDto = new LanguageDto();
+                languageDto.setName(each.getName());
+                languageDto.setCode(each.getCode());
+                languageDto.setNativeName(each.getNativeName());
+                return languageDto;
+            }).toList());
         }
 
         /* Originally I wanted to get the currency of the country via the "IP2Country (IpApi)" service.
@@ -61,20 +60,19 @@ public class IpService {
         countryDto.setCurrencyExchangeRateWithUsDollar(
                 utilsService.getDollarExchangeRate(fixerClient.getExchangeRates(),
                         currency.getCurrencyCode()));
-//        countryDto.setCurrencyExchangeRateWithUsDollar(Utils.getDollarExchangeRate(fixerClient.getExchangeRatesFake(), currency.getCurrencyCode()));
-
+//        countryDto.setCurrencyExchangeRateWithUsDollar(utilsService.getDollarExchangeRate(
+//                fixerClient.getExchangeRatesMock(), currency.getCurrencyCode()));
 
         /* Similar to what was mentioned above.
-        * I am not able to get the timezone data neither from the  "IP2Country (IpApi)" service nor from
-        * the "Country Layer" Service using a free plan.
-        * As a workaround for that issue I try to find the timezones vía the country's name and code name.
-        * See details in the Utils class.
-        * Please keep in mind This approach will not work for all cases.
-        * */
+         * I am not able to get the timezone data neither from the  "IP2Country (IpApi)" service nor from
+         * the "Country Layer" Service using a free plan.
+         * As a workaround for that issue I try to find the timezones vía the country's name and code name.
+         * See details in the Utils class.
+         * Please keep in mind This approach will not work for all cases.
+         * */
         countryDto.setTimeZones(utilsService.getCurrentTimesByCountry(data.getCountryCode(), data.getCountryName()));
 
-        var distanceFromBuenosAires = utilsService.getDistanceFromBuenosAires(
-                data.getLatitude(), data.getLongitude());
+        var distanceFromBuenosAires = utilsService.getDistanceFromBuenosAires(data.getLatitude(), data.getLongitude());
 
         countryDto.setLatitude(data.getLatitude());
         countryDto.setLongitude(data.getLongitude());
@@ -82,15 +80,9 @@ public class IpService {
         countryDto.setBuenosAiresLongitude(BUENOS_AIRES_LON);
         countryDto.setDistanceToBuenosAires(distanceFromBuenosAires);
 
-        var invocation = invocationRepository.findByCountryCode(data.getCountryCode());
-        if (invocation == null) {
-            invocation = new Invocation();
-            invocation.setAmount(0L);
-        }
-
+        var invocation = new Invocation();
         invocation.setCountryCode(data.getCountryCode());
         invocation.setDistance(distanceFromBuenosAires);
-        invocation.setAmount(invocation.getAmount() + 1);
 
         invocationRepository.save(invocation);
 

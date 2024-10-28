@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface InvocationRepository extends JpaRepository<Invocation, Long> {
 
-    Invocation findByCountryCode(String countryCode);
-
     @Query(value = "SELECT MAX(distance) FROM Invocation")
     Double findMaxDistance();
 
@@ -16,8 +14,19 @@ public interface InvocationRepository extends JpaRepository<Invocation, Long> {
 
     @Query(nativeQuery = true, value =
             """
-            SELECT SUM(distance * amount) / SUM(amount)
-            FROM invocations
+            SELECT MAX(total_distance / invocation_count)
+            FROM (
+              SELECT
+                SUM(distance) AS total_distance,
+                (
+                  SELECT COUNT(*)
+                  FROM invocations
+                )
+                  AS invocation_count
+              FROM invocations
+              GROUP BY country_code
+            )
+              AS max_distance;
             """
     )
     Double findAverageDistance();

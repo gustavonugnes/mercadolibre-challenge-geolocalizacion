@@ -11,15 +11,17 @@ public class StatisticsService {
 
     private final InvocationRepository invocationRepository;
 
+    @Cacheable(value = "max_distance")
     public Double getMaxDistance() {
         return invocationRepository.findMaxDistance();
     }
 
+    @Cacheable(value = "min_distance")
     public Double getMinDistance() {
         return invocationRepository.findMinDistance();
     }
 
-    @Cacheable(value = "myCache")
+    @Cacheable(value = "average_distance")
     public Double getAverageDistance() {
         return invocationRepository.findAverageDistance();
     }
