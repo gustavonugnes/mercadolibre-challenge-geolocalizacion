@@ -3,17 +3,13 @@ package com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Ip2CountryDto {
 
@@ -38,8 +34,6 @@ public class Ip2CountryDto {
 
     @Getter
     @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class LocationDto {
         private Integer geonameId;
         private String capital;
@@ -52,8 +46,6 @@ public class Ip2CountryDto {
 
         @Getter
         @Setter
-        @NoArgsConstructor
-        @AllArgsConstructor
         public static class LanguageDto {
             private String code;
             private String name;

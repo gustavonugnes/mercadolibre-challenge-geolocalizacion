@@ -1,8 +1,6 @@
 package com.gnugnes.mercadolibre_challenge_geolocalizacion.dtos;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -12,8 +10,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CountryDto {
 
     private String ip;
