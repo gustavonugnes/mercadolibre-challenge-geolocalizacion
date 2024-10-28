@@ -7,13 +7,13 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.math.RoundingMode.UP;
+import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
 @Service
 public class UtilsService {
@@ -22,7 +22,6 @@ public class UtilsService {
     public static final double BUENOS_AIRES_LON = -58.37723;
 
     private static final double EARTH_RADIUS = 6371;
-
     private static final String USD_CODE = "USD";
 
     public Double getDistanceFromBuenosAires(Double lat, Double lon) {
@@ -44,8 +43,7 @@ public class UtilsService {
     }
 
     public Currency getCurrencyByCountryCode(String countryCode) {
-        var locale = Locale.of("", countryCode);
-        return Currency.getInstance(locale);
+        return Currency.getInstance(Locale.of("", countryCode));
     }
 
     public Set<String> getCurrentTimesByCountry(String countryCode, String countryName) {
@@ -67,10 +65,8 @@ public class UtilsService {
         }
 
         return zones.stream()
-                .map(zoneId -> {
-                    var zonedDateTime = ZonedDateTime.ofInstant(now, ZoneId.of(zoneId));
-                    return zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                }).collect(Collectors.toSet());
+                .map(zoneId -> ZonedDateTime.ofInstant(now, ZoneId.of(zoneId)).format(ISO_OFFSET_DATE_TIME))
+                .collect(Collectors.toSet());
     }
 
     public BigDecimal getDollarExchangeRate(ExchangeRatesDto dto, String currencyCode) {

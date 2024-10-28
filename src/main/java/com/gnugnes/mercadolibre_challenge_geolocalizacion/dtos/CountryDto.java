@@ -31,5 +31,4 @@ public class CountryDto {
     private Double buenosAiresLongitude;
     private Double distanceToBuenosAires;
 
-
 }
