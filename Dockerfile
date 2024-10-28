@@ -11,7 +11,7 @@ RUN chmod +x mvnw
 RUN ./mvnw dependency:resolve --no-transfer-progress
 
 COPY src ./src
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package
 
 # Stage 2: Run the Spring Boot application
 FROM openjdk:21-jdk-slim
