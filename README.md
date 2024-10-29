@@ -4,16 +4,16 @@
 
 This application is a geolocation service built with **Java** and the **Spring Framework**. 
 It allows users to get geolocation data based on an IP address provided by the user.
-It also allows retrieving some usage relevant usage statistics.
+It also allows retrieving relevant usage statistics.
 The service was designed with high availability in mind, utilizing a cache with Redis.
 A simple web page is provided to use the features of the service.
 
 ## Features
 
-- Geolocation via an user provided IP address
-- Usage statistics, including minimum, maximum and average distance where the geolocation was provided
+- Geolocation via a user-provided IP address
+- Usage statistics, including minimum, maximum and average distance for the provided geolocation
 - Runs in Docker containers for easy deployment
-- Integrated with MySQL for persistent data storage and Redis for high availability
+- MySQL for persistent storage and Redis for caching
 
 ## Technologies Used
 
@@ -51,25 +51,25 @@ The application is structured into different layers to enhance separation of con
 **Services**, **Repositories**, and **Clients**.
 
 - **Controllers** are responsible for handling user requests. They validate the request format, interact with services 
-- to obtain the required data, and return the responses to the users.
-
+to obtain the required data and return the responses to the users.
+- 
 - **Services** act as intermediaries in the application. They contain the business logic and retrieve relevant 
-- information, formatting it appropriately for the controllers. Services can obtain data from external APIs through clients or communicate with repositories for data persistence and retrieval.
+information, formatting it appropriately for the controllers. Services can obtain data from external APIs through 
+clients or communicate with repositories for data persistence and retrieval.
 
 - **Repositories** are tasked with persisting and retrieving data from the MySQL database.
 
 - **Clients** handle requests to external APIs and return results in a simplified format to the services.
 
-Multiple classes can exist within these categories, depending on the application’s specific concerns. For example, 
+Each layer may contain multiple classes, depending on the application’s specific concerns. For example, 
 there may be a dedicated controller for IP requests and another for statistics.
 
 ### High Availability
 
 To ensure the service operates efficiently under heavy request loads, a caching mechanism has been implemented for 
-high-demand endpoints. This cache utilizes a Redis database, allowing rapid data retrieval for certain queries and 
-helping to prevent bottlenecks. Additionally, a scheduled task has been developed to evict all caches once daily at 
-midnight, a time typically associated with lower demand. This timing can be configured for different times 
-or cadences as needed.
+high-demand endpoints. Redis caching allows rapid data retrieval and helps prevent bottlenecks. Additionally, a 
+scheduled task has been developed to evict all caches once daily at midnight, a time typically associated with lower 
+demand. This timing can be configured for different times or cadences as needed.
 
 ### External APIs
 The application consumes data from several third-party APIs to obtain necessary information.
@@ -94,29 +94,22 @@ The application consumes data from several third-party APIs to obtain necessary 
 
 - **fixer**: This API is used to obtain the current exchange rate of the user's currency against the US dollar.
   Due to limitations in the free subscription, we had to implement this feature indirectly. We use the API's
-  "/latest" endpoint, which provides a list of exchange rates for several currencies against the Euro.
+  `/latest` endpoint, which provides a list of exchange rates for several currencies against the Euro.
   Since the base currency of this endpoint is fixed as the Euro, we cannot change it under the free
   subscription. To obtain the desired exchange rate, we take two values: the exchange rate of the Euro
   against the US dollar and the rate of the Euro against the user's currency. We then divide the first
   value by the second to derive the needed data.
 
-### Miscellaneous
+### Additional Details
 
 - A validation was added to `IPController` to check that the IP value provided by the user has the
   appropriate formatting.
 - Test classes were added for controllers and especially for services to ensure the code behaves as expected.
 - The application uses Flyway to run the necessary migrations for setting up the MySQL database schema.
-- There is an "index.html" file that serves as a frontend for this backend service, allowing users to utilize
+- There is an `index.html` file that serves as a frontend for this backend service, allowing users to utilize
   the IP geolocation and statistics features.
 - This application is designed to be deployed with Docker. The `docker-compose.xml` file will set up the
   necessary containers (MySQL, Redis, and the app itself). The `Dockerfile` will build and deploy the application.
 - During the development of this application, external services were sometimes mocked by reading a hardcoded
   file to avoid limitations of the free subscription plans (100 requests/month for each service). The usage
   of real clients or mocks is configured with a property and an environment variable (by default, mocks are not used).
-
-
-
-
-
-  
-
