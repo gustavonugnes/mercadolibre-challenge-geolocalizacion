@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CacheConfig {
 
-    @Scheduled(cron = "0 0 0 * * ?")  // Runs at midnight every day
+    // Task scheduled to runs at midnight every day and clear all redis caches
+    @Scheduled(cron = "0 0 0 * * ?")
     @CacheEvict(value = {"max_distance", "min_distance", "average_distance"}, allEntries = true)
     public void clearAllCaches() {
         log.info("All entries cleared for caches: max_distance, min_distance, average_distance");

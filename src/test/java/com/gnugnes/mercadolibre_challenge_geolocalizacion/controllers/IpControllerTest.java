@@ -27,7 +27,7 @@ class IpControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getIpData_shouldReturnCountryDto() throws Exception {
+    void getGeolocationData() throws Exception {
         var ip = "8.8.8.8";
 
         var countryDto = new CountryDto();
@@ -44,7 +44,7 @@ class IpControllerTest {
     }
 
     @Test
-    void getIpData_shouldReturnCountryDto_invalidFormat() throws Exception {
+    void getGeolocationData_shouldReturnCountryDto_invalidFormat() throws Exception {
         var ip = "1234";
 
         mockMvc.perform(get("/ips/{ip}", ip))

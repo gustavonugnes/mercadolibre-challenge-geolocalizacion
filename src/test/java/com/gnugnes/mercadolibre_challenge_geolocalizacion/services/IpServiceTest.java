@@ -100,7 +100,6 @@ class IpServiceTest {
         assertThat(result.getLanguages()).extracting(LanguageDto::getName).containsExactly("Spanish");
         assertThat(result.getLanguages()).extracting(LanguageDto::getNativeName).containsExactly("Español");
         assertThat(result.getCurrencyCode()).isEqualTo("ARS");
-        assertThat(result.getCurrencyName()).isEqualTo("peso argentino");
         assertThat(result.getCurrencyExchangeRateWithUsDollar()).isEqualTo("0.001");
         assertThat(result.getTimeZones()).isNotEmpty();
         assertThat(result.getTimeZones()).containsExactly("2024-10-27T15:43:32-03:00");

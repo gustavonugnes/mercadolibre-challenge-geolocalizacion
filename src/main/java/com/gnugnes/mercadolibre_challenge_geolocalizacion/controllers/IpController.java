@@ -20,7 +20,7 @@ public class IpController {
     private final IpService ipService;
 
     @GetMapping("/{ip}")
-    public CountryDto getIpData(@PathVariable String ip) {
+    public CountryDto getIpGeolocationData(@PathVariable String ip) {
         if(!InetAddressValidator.getInstance().isValid(ip)) {
             throw new ResponseStatusException(BAD_REQUEST, "The provided IP does not have a valid format");
         }

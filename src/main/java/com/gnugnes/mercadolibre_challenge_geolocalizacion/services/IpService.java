@@ -81,9 +81,11 @@ public class IpService {
          * See details in the Utils class.
          * Please keep in mind This approach will not work for all cases.
          * */
-        countryDto.setTimeZones(utilsService.getCurrentTimesByCountry(ip2CountryDto.getCountryCode(), ip2CountryDto.getCountryName()));
+        countryDto.setTimeZones(utilsService.getCurrentTimesByCountry(ip2CountryDto.getCountryCode(),
+                ip2CountryDto.getCountryName()));
 
-        var distanceFromBuenosAires = utilsService.getDistanceFromBuenosAires(ip2CountryDto.getLatitude(), ip2CountryDto.getLongitude());
+        var distanceFromBuenosAires = utilsService.getDistanceFromBuenosAires(ip2CountryDto.getLatitude(),
+                ip2CountryDto.getLongitude());
 
         countryDto.setLatitude(ip2CountryDto.getLatitude());
         countryDto.setLongitude(ip2CountryDto.getLongitude());
