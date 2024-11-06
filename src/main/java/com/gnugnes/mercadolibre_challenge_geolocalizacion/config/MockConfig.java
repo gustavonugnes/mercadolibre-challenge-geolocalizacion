@@ -11,5 +11,5 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class MockConfig {
 
-    private boolean enabled;
+    private Boolean enabled;
 }

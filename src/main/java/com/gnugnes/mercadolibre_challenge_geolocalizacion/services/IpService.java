@@ -28,7 +28,7 @@ public class IpService {
 
     public CountryDto getCountryData(String ip) {
         Ip2CountryDto ip2CountryDto;
-        if(mockConfig.isEnabled()) {
+        if(mockConfig.getEnabled()) {
             ip2CountryDto = ip2CountryClient.getCountryDataMock(ip);
         } else {
             ip2CountryDto = ip2CountryClient.getCountryData(ip);
@@ -65,7 +65,7 @@ public class IpService {
          to get the {currentCurrency}/USD that is needed.
         */
 
-        if(mockConfig.isEnabled()) {
+        if(mockConfig.getEnabled()) {
             countryDto.setCurrencyExchangeRateWithUsDollar(utilsService.getDollarExchangeRate(
                 fixerClient.getExchangeRatesMock(), currency.getCurrencyCode()));
         } else {
